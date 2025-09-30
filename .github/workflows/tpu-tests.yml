@@ -48,7 +48,7 @@ jobs:
     - name: Install tunix dependencies
       run: |
         pip install -e .
-        pip install pytest pytest-xdist
+        pip install pytest pytest-xdist jinja2
 
     - name: Verify TPU availability
       run: |
