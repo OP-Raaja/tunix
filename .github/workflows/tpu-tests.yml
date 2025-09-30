@@ -19,6 +19,10 @@ name: TPU Tests
 
 on:
   workflow_call:
+    secrets:
+      HF_TOKEN:
+        required: true
+        description: 'HuggingFace token for model downloads'
 
 concurrency:
   # Dedup pull requests (canceling previous runs of the same workflow for same PR), and scheduled runs but nothing else
