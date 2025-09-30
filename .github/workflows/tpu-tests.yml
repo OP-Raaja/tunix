@@ -73,6 +73,13 @@ jobs:
       run: |
         python -m pytest tests/models/ -v --tb=short -m "not cpu_only and not gpu_only"
 
+    - name: GRPO Integration Test
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        # Run GRPO demo script with minimal configuration
+        python3 scripts/grpo_demo_llama3_qwen2.py --model-version=Qwen/Qwen2.5-0.5B
+
     - name: Run tunix cli tests
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -115,49 +122,3 @@ jobs:
           exit "${code:-0}"
         fi
 
-    - name: GRPO Integration Test
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      run: |
-        # Set HuggingFace token for model downloads
-        if [ -z "$HF_TOKEN" ]; then
-          echo "ERROR: HF_TOKEN secret is not set!"
-          exit 1
-        fi
-        
-        # Login to HuggingFace
-        python -c "from huggingface_hub import login; login(token='$HF_TOKEN')"
-        
-        # Run GRPO integration test with minimal configuration (1 batch, 1 generation)
-        # Using mesh (2,4) to utilize all 8 TPUs in v5e-8
-        python3 -m tunix.cli.grpo_main \
-          tunix/cli/base_config.yaml \
-          reference_model_config.model_name="llama3.2-1b" \
-          reference_model_config.model_id="meta-llama/Llama-3.2-1B" \
-          reference_model_config.model_source="huggingface" \
-          reference_model_config.intermediate_ckpt_dir="/tmp/grpo_test_ckpt" \
-          reference_model_config.mesh.shape="(2,4)" \
-          reference_model_config.mesh.axis_names="('fsdp','tp')" \
-          actor_model_config.lora_config.rank=8 \
-          actor_model_config.lora_config.alpha=8.0 \
-          actor_model_config.lora_config.module_path=".*q_proj|.*k_proj|.*v_proj|.*o_proj|.*gate_proj|.*down_proj|.*up_proj" \
-          actor_model_config.mesh.shape="(2,4)" \
-          actor_model_config.mesh.axis_names="('fsdp','tp')" \
-          rollout_model_config.mesh.shape="(2,4)" \
-          rollout_model_config.mesh.axis_names="('fsdp','tp')" \
-          tokenizer_config.tokenizer_path="meta-llama/Llama-3.2-1B" \
-          tokenizer_config.tokenizer_type="huggingface" \
-          tokenizer_config.add_bos=false \
-          dataset_name="gsm8k" \
-          batch_size=1 \
-          num_batches=1 \
-          rl_training_config.max_steps=1 \
-          rollout_config.total_generation_steps=32 \
-          rollout_config.max_prompt_length=128 \
-          rollout_engine="vanilla" \
-          offload_to_cpu=false \
-          grpo_config.num_generations=1 \
-          grpo_config.num_iterations=1 \
-          reward_functions="['tunix.cli.utils.reward.check_answer']"
-        
-        echo "✅ GRPO integration test completed successfully"
