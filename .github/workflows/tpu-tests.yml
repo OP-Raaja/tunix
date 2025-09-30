@@ -78,7 +78,9 @@ jobs:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
       run: |
         # Run GRPO demo script with minimal configuration
-        python3 scripts/grpo_demo_llama3_qwen2.py --model-version=Qwen/Qwen2.5-0.5B
+        python3 scripts/grpo_demo_llama3_qwen2.py \
+          --root-dir=/tmp/grpo_test \
+          --model-version=Qwen/Qwen2.5-0.5B
 
     - name: Run tunix cli tests
       env:
