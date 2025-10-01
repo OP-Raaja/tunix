@@ -164,7 +164,7 @@ EPSILON = 0.2
 # 4 is the max we can do on v5e-8 with llama3 1B model.
 BATCH_SIZE = 4
 # To speed up for quick workflow validation, we can change NUM_BATCHES to e.g. 2
-NUM_BATCHES = 1869
+NUM_BATCHES = 8
 # Keep `NUM_TEST_BATCHES` low so that evaluation runs quickly. It can be
 # increased to a max. of 330 (if batch size is 4).
 # To speed up for quick workflow validation, we can change it to e.g. 1
