@@ -778,7 +778,7 @@ cluster_config = rl_cluster_lib.ClusterConfig(
         rl_cluster_lib.Role.REFERENCE: mesh,
         rl_cluster_lib.Role.ROLLOUT: mesh,
     },
-    rollout_engine="vllm",
+    rollout_engine="vanilla",
     offload_to_cpu=False,
     training_config=rl_cluster_lib.RLTrainingConfig(
         actor_optimizer=optimizer,
