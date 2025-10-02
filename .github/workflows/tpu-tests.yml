@@ -135,8 +135,10 @@ jobs:
         # Run GRPO demo script with minimal configuration
         python3 scripts/grpo_demo_llama3_qwen2.py \
           --root-dir=/tmp/grpo_test \
-          --model-version=Qwen/Qwen2.5-0.5B-Instruct
-          
+          --model-version=Qwen/Qwen2.5-0.5B-Instruct \
+          --num-batches=8 \
+          --rollout-engine=vanilla
+
     - name: Run tunix tests not covered by the above categories
       run: |
         # This category is to catch tests added but not covered by CI yet. Whenever you add new folders under tests/, please add a new category above and skip those tests here.
