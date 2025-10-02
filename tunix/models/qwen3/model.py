@@ -622,7 +622,7 @@ class Qwen3(nnx.Module, pytree=False):
     self.layers = container.ModuleList([
         DecoderLayer(config=config, rngs=rngs, shd_config=shd_config)
         for _ in range(config.num_layers)
-    ]
+    ])
     self.final_norm = RMSNorm(
         config.embed_dim,
         rngs=rngs,
